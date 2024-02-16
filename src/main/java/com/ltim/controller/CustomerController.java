@@ -72,5 +72,13 @@ public class CustomerController {
 		return response;
 
 	}
+	
+	@GetMapping(value = "/native" , consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<CustomerResponse> retrieveCustomersUsinNativeQuery() {
+		System.out.println("inside native method call");
+		CustomerResponse customerList = customerService.findAllCustomers();
+		return new ResponseEntity<CustomerResponse>(customerList, HttpStatus.OK);
+	}
+
 
 }

@@ -72,5 +72,14 @@ public class CustomerService {
 		System.out.println("delete flag tracl::");
 		return responseFlag;
 	}
+	
+	public CustomerResponse findAllCustomers(){
+		CustomerResponse response = new CustomerResponse();
+		List<CustomerDTO> customerList = customerRepository.findAllCustomer().stream().map(c -> converterUtil.convertToDto(c))
+				.collect(Collectors.toList());
+
+		response.setCustomerList(customerList);
+		return response; 
+	}
 
 }
