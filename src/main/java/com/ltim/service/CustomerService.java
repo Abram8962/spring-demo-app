@@ -9,10 +9,13 @@ import org.springframework.stereotype.Service;
 
 import com.ltim.dto.CustomerDTO;
 import com.ltim.dto.CustomerResponse;
+import com.ltim.dto.PersonDTO;
+import com.ltim.dto.PersonResponse;
 import com.ltim.entity.Customer;
+import com.ltim.entity.Person;
 import com.ltim.repositroy.CustomerRepository;
+import com.ltim.repositroy.PersonRepository;
 import com.ltim.util.ConverterUtil;
-
 
 @Service
 public class CustomerService {
@@ -21,10 +24,14 @@ public class CustomerService {
 
 	private ConverterUtil converterUtil;
 
+	private PersonRepository personRepository;
+
 	@Autowired
-	public CustomerService(CustomerRepository customerRepository, ConverterUtil converterUtil) {
+	public CustomerService(CustomerRepository customerRepository, ConverterUtil converterUtil,
+			PersonRepository personRepository) {
 		this.customerRepository = customerRepository;
 		this.converterUtil = converterUtil;
+		this.personRepository = personRepository;
 	}
 
 	public CustomerService() {
@@ -60,7 +67,7 @@ public class CustomerService {
 	}
 
 	public Boolean deleteCustomer(long id) {
-		Boolean responseFlag ;
+		Boolean responseFlag;
 		Customer customer = new Customer();
 		customer.setId(id);
 		try {
@@ -72,14 +79,36 @@ public class CustomerService {
 		System.out.println("delete flag tracl::");
 		return responseFlag;
 	}
-	
-	public CustomerResponse findAllCustomers(){
+
+	public CustomerResponse findAllCustomers() {
 		CustomerResponse response = new CustomerResponse();
-		List<CustomerDTO> customerList = customerRepository.findAllCustomer().stream().map(c -> converterUtil.convertToDto(c))
-				.collect(Collectors.toList());
+		List<CustomerDTO> customerList = customerRepository.findAllCustomer().stream()
+				.map(c -> converterUtil.convertToDto(c)).collect(Collectors.toList());
 
 		response.setCustomerList(customerList);
-		return response; 
+		return response;
+	}
+
+	public PersonResponse findAllPerson() {
+		PersonResponse response = new PersonResponse();
+		List<PersonDTO> personList = personRepository.findAllPersons().stream().map(p -> converterUtil.convertToDto(p))
+				.collect(Collectors.toList());
+
+		response.setPersonList(personList);
+		return response;
+	}
+
+	public PersonDTO addPerson(PersonDTO personDTO)
+			throws ParseException {
+		 /*
+		 * PersonCompositeKey personCompositeKey = new PersonCompositeKey();
+		 * personCompositeKey.setEmail(personCompositeKey.getEmail());
+		 * personCompositeKey.setPan(personDTO.getPan());
+		 */
+
+		Person person = converterUtil.convertToEntity(personDTO);
+		person = personRepository.save(person);
+		return converterUtil.convertToDto(person);
 	}
 
 }

@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ltim.dto.CustomerDTO;
 import com.ltim.dto.CustomerResponse;
+import com.ltim.dto.PersonDTO;
+import com.ltim.dto.PersonResponse;
 import com.ltim.service.CustomerService;
 
 @RestController
@@ -40,12 +42,12 @@ public class CustomerController {
 		return "hi I am executed successfuly";
 	}
 
-	@GetMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<CustomerDTO> retrieveCustomerById(@PathVariable long id) {
 		return new ResponseEntity<CustomerDTO>(customerService.findById(id), HttpStatus.OK);
 	}
 
-	@GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<CustomerResponse> retrieveCustomers() {
 		CustomerResponse customerList = customerService.retrieveCustomers();
 		return new ResponseEntity<CustomerResponse>(customerList, HttpStatus.OK);
@@ -64,7 +66,7 @@ public class CustomerController {
 
 	}
 
-	@DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Void> deleteCustomer(@PathVariable long id) {
 		Boolean responseFlag = customerService.deleteCustomer(id);
 		ResponseEntity<Void> response = responseFlag ? new ResponseEntity<Void>(HttpStatus.NO_CONTENT)
@@ -73,12 +75,24 @@ public class CustomerController {
 
 	}
 	
-	@GetMapping(value = "/native" , consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/native", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<CustomerResponse> retrieveCustomersUsinNativeQuery() {
 		System.out.println("inside native method call");
 		CustomerResponse customerList = customerService.findAllCustomers();
 		return new ResponseEntity<CustomerResponse>(customerList, HttpStatus.OK);
 	}
 
+	@GetMapping(value = "/personnNtive", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<PersonResponse> retrieveaPersonsUsinNativeQuery() {
+		System.out.println("inside person native method call");
+		PersonResponse personList = customerService.findAllPerson();
+		return new ResponseEntity<PersonResponse>(personList, HttpStatus.OK);
+	}
+	
+	@PostMapping(value = "/personCreate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<PersonDTO> addNewPerson(@RequestBody PersonDTO personDTO) throws ParseException {
+		System.out.println("inside post method::");
+		return new ResponseEntity<PersonDTO>(customerService.addPerson(personDTO), HttpStatus.OK);
+	}
 
 }
